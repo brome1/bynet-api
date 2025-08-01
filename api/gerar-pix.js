@@ -1,4 +1,4 @@
-import fetch from 'node-fetch';
+// Removido: import fetch from 'node-fetch';
 
 export default async function handler(req, res) {
   // Habilita CORS
@@ -44,6 +44,7 @@ export default async function handler(req, res) {
 
     // Validação básica
     if (!name || !email || !cpf || !phone || !title || !unitPrice || !postbackUrl) {
+      console.error('Parâmetros obrigatórios ausentes:', { name, email, cpf, phone, title, unitPrice, postbackUrl });
       return res.status(400).json({ error: 'Parâmetros obrigatórios ausentes.' });
     }
 
@@ -96,9 +97,11 @@ export default async function handler(req, res) {
     const BYNET_API_KEY = process.env.BYNET_API_KEY;
 
     if (!BYNET_API_KEY) {
+      console.error('API KEY da Bynet não configurada.');
       return res.status(500).json({ error: 'API KEY da Bynet não configurada.' });
     }
 
+    console.log('Enviando requisição para Bynet:', BYNET_URL, body);
     // Faz a requisição para a Bynet
     const response = await fetch(BYNET_URL, {
       method: 'POST',
@@ -111,8 +114,10 @@ export default async function handler(req, res) {
     });
 
     const data = await response.json();
+    console.log('Resposta da Bynet:', data);
 
     if (!response.ok) {
+      console.error('Erro da Bynet:', data);
       return res.status(response.status).json({ error: data.message || 'Erro ao criar transação PIX.' });
     }
 
@@ -123,7 +128,7 @@ export default async function handler(req, res) {
       data: data.data,
     });
   } catch (error) {
-    console.error('Erro:', error);
+    console.error('Erro inesperado:', error);
     return res.status(500).json({ error: error.message });
   }
 }
