@@ -1,4 +1,3 @@
-import fetch from 'node-fetch';
 import path from 'path';
 
 export default async function handler(req, res) {
@@ -21,6 +20,7 @@ export default async function handler(req, res) {
     const { hash } = req.query;
 
     if (!hash) {
+      console.error('Hash não informado');
       return res.status(400).json({ error: 'Hash não informado' });
     }
 
@@ -29,9 +29,11 @@ export default async function handler(req, res) {
     const BYNET_API_KEY = process.env.BYNET_API_KEY;
 
     if (!BYNET_API_KEY) {
+      console.error('API KEY da Bynet não configurada.');
       return res.status(500).json({ error: 'API KEY da Bynet não configurada.' });
     }
 
+    console.log('Consultando transação na Bynet:', `${BYNET_URL}/${hash}`);
     // Faz a requisição para a Bynet
     const response = await fetch(`${BYNET_URL}/${hash}`, {
       method: 'GET',
@@ -43,8 +45,10 @@ export default async function handler(req, res) {
     });
 
     const data = await response.json();
+    console.log('Resposta da Bynet:', data);
 
     if (!response.ok) {
+      console.error('Erro da Bynet:', data);
       return res.status(response.status).json({ error: data.message || 'Erro ao consultar transação.' });
     }
 
@@ -55,7 +59,7 @@ export default async function handler(req, res) {
       data: data.data,
     });
   } catch (error) {
-    console.error('Erro ao verificar pagamento:', error);
+    console.error('Erro inesperado:', error);
     return res.status(500).json({ error: error.message });
   }
 } 
