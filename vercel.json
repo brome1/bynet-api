@@ -1,0 +1,20 @@
+{
+  "version": 2,
+  "routes": [
+    {
+      "src": "/api/gerar-pix",
+      "methods": ["GET", "OPTIONS"],
+      "dest": "/api/gerar-pix.js"
+    },
+    {
+      "src": "/api/webhook",
+      "methods": ["POST", "OPTIONS"],
+      "dest": "/api/webhook.js"
+    },
+    {
+      "src": "/api/verificar-pagamento",
+      "methods": ["GET", "OPTIONS"],
+      "dest": "/api/verificar-pagamento.js"
+    }
+  ]
+} 
